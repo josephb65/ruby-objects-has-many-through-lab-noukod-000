@@ -1,34 +1,31 @@
-class Patient 
-   attr_reader :name
-   @@all = []
+class Patient
+  attr_accessor :name
 
-   def initialize(name)
-     @name = name
-     @@all << self
-   end
+  @@all = []
 
-   def self.all 
-     @@all 
-   end
+  def initialize(name)
+    @name = name
+    self.class.all << self
+  end
 
-   def appointments 
-     Appointment.all.select do |appt| 
-       appt.patient == self 
-     end
-   end
- 
-   def schedule_appointment(doctor, time)
-     Appointment.new(self, doctor, date='tbd', time)
-   end
-   
-   def self.find_by_name(patient_name)
-     self.all.find do |patient|
-       patient.name == patient_name
-     end
-   end
+  def self.all
+    @@all
+  end
 
-   def find_doc(spec)
-     Doctor.find_by_specialty(spec)
-   end
+  def new_appointment(doctor, date)
+    Appointment.new(date, self, doctor)
+  end
 
- end 
+  def appointments
+    Appointment.all.select do |appointment|
+      appointment.patient == self
+    end
+  end
+
+  def doctors
+    appointments.map do |appointment|
+      appointment.doctor
+    end
+  end
+
+end
