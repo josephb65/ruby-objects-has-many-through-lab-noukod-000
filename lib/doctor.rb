@@ -1,51 +1,27 @@
-class Doctor 
- 
-   attr_reader :name
-   attr_accessor :specialty
+class Doctor
+  @@all=[]
 
-   @@all = []
+  def self.all
+    @@all
+  end
 
-   def initialize(name, specialty)
-   @name = name 
-   @specialty = specialty
+  attr_accessor :name, :appointments, :patient
 
-   @@all << self
-   end
+  def initialize(name)
+    @name = name
+    @appointments = []
+    @@all << self
+  end
 
-   def self.all 
-     @@all 
-   end
+  def new_appointment(date, patient)
+     appointment = Appointment.new(patient, date, self)
+     @appointments << appointment
+     appointment
+  end
 
-   def self.find_by_specialty(spec)
-     self.all.select do |doc|
-       doc.specialty == spec 
-     end
-   end
-
-   def appointments 
-     Appointment.all.select do |appt| 
-       appt.doctor == self 
-     end
-   end
-
-   def patients 
-    appointments.map do |appt|
-       appt.patient
-     end
-   end 
-
-   def patient_names 
-     patients.map do |patient| 
-       patient.name
-     end
-   end
-
-   def reschedule_appointment(current_date, new_date)
-     appointments.map do |appt| 
-       if appt.date == current_date
-         appt.date = new_date 
-         return appt
-      end
-     end 
-   end
- end
+  def patients
+    @appointments.collect do |appointment|
+      appointment.patient
+    end
+  end
+end
